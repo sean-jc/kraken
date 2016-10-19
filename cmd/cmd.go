@@ -21,6 +21,7 @@ It's a work in-progress, expect issues and you won't be disappointed.`,
 func Execute() {
 	rootCmd.AddCommand(attackCmd())
 	rootCmd.AddCommand(pummelCmd())
+	rootCmd.AddCommand(siegeCmd())
 	rootCmd.AddCommand(reportCmd())
 	// rootCmd.AddCommand(NewVersionCommand())
 
