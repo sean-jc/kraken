@@ -33,12 +33,9 @@ func (k *Kraken) hit(t *Target, tm time.Time) *Result {
 
 	res := Result{
 		Timestamp: tm,
-		Latencies: []Latency{
-			Latency{
-				Name: "Overall",
-			},
-		},
+		Latencies: make([]Latency, len(t.post)+1),
 	}
+	res.Latencies[0].Name = "Overall"
 
 	var b bytes.Buffer
 

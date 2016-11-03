@@ -85,7 +85,7 @@ func runScript(script string, stdin io.Reader) ([]byte, error) {
 }
 
 func (t *Target) ProcessOutput(stdin io.Reader, res *Result) error {
-	for _, s := range t.post {
+	for i, s := range t.post {
 		var in bytes.Buffer
 
 		// Recapture the incoming data into a buffer and point stdin to the new
@@ -102,7 +102,7 @@ func (t *Target) ProcessOutput(stdin io.Reader, res *Result) error {
 			return err
 		}
 
-		res.Latencies = append(res.Latencies, Latency{s.Name, time.Duration(l * float64(time.Second))})
+		res.Latencies[i+1] = Latency{s.Name, time.Duration(l * float64(time.Second))}
 	}
 	return nil
 }

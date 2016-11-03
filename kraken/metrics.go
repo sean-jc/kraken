@@ -75,21 +75,21 @@ func (m *Metrics) Add(r *Result) {
 		m.End = end
 	}
 
-	for i, l := range r.Latencies {
-		if m.Latencies[i].Name != l.Name {
-			panic(fmt.Sprintf("Divergence in latency names: expected %s, actual %s\n", m.Latencies[i].Name, l.Name))
-		}
-		m.Latencies[i].Total += l.Time
-
-		if l.Time > m.Latencies[i].Max {
-			m.Latencies[i].Max = l.Time
-		}
-
-		m.latencies[i].Add(float64(l.Time))
-	}
-
 	if r.Error == "" {
 		m.success++
+
+		for i, l := range r.Latencies {
+			if m.Latencies[i].Name != l.Name {
+				panic(fmt.Sprintf("Divergence in latency names: expected %s, actual %s\n", m.Latencies[i].Name, l.Name))
+			}
+			m.Latencies[i].Total += l.Time
+
+			if l.Time > m.Latencies[i].Max {
+				m.Latencies[i].Max = l.Time
+			}
+
+			m.latencies[i].Add(float64(l.Time))
+		}
 	} else {
 		if _, ok := m.errors[r.Error]; !ok {
 			m.errors[r.Error] = struct{}{}
@@ -120,7 +120,7 @@ func (m *Metrics) init(r *Result) {
 	if m.errors == nil {
 		m.errors = map[string]struct{}{}
 	}
-	if r != nil {
+	if r != nil && r.Error == "" {
 		if len(m.latencies) == 0 {
 			m.latencies = make([]*quantile.Estimator, len(r.Latencies))
 			for i := range r.Latencies {
